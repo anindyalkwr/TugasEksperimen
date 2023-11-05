@@ -5,35 +5,28 @@ import tracemalloc
 
 def main():
     sizes = [500, 5000, 50000]
+    algorithms = [counting_sort, bci_sort]
 
     for size in sizes:
-        sorted_data = generate_dataset(size)
-        randomized_data = sorted_data[:]
-        random.shuffle(randomized_data)
-        randomized_data_copy = randomized_data.copy()
-        reversed_data = sorted_data[::-1]
-        reversed_data_copy = reversed_data.copy()
+        dataset_labels = ["sorted", "randomized", "reversed"]
 
-        print(f"Dataset Size: {size}")
-        measure_running_time(counting_sort, sorted_data, "Counting Sort on sorted data")
-        measure_memory_usage(counting_sort, sorted_data, "Counting Sort on sorted data")
-        measure_running_time(bci_sort, sorted_data, "BCI Sort on sorted data")
-        measure_memory_usage(bci_sort, sorted_data, "BCI Sort on sorted data")
-        print()
-        measure_running_time(counting_sort, randomized_data, "Counting Sort on randomized data")
-        measure_memory_usage(counting_sort, randomized_data, "Counting Sort on randomized data")
-        measure_running_time(bci_sort, randomized_data, "BCI Sort on randomized data")
-        measure_memory_usage(bci_sort, randomized_data_copy, "BCI Sort on randomized data")
-        print()
-        measure_running_time(counting_sort, reversed_data, "Counting Sort on reversed data")
-        measure_memory_usage(counting_sort, reversed_data, "Counting Sort on reversed data")
-        measure_running_time(bci_sort, reversed_data, "BCI Sort on reversed data")
-        measure_memory_usage(bci_sort, reversed_data_copy, "BCI Sort on reversed data")
-        print()
+        for label in dataset_labels:
+            with open(f"{label}_dataset_{size}.txt", "r") as file:
+                data = [int(line) for line in file.read().splitlines()]
+
+            print(f"Dataset Size: {size}, Type: {label}")
+            for algorithm in algorithms:
+                measure_running_time(algorithm, data, f"{algorithm.__name__} on {label} data")
+                measure_memory_usage(algorithm, data, f"{algorithm.__name__} on {label} data")
+            print()
 
 
 def generate_dataset(size):
-    dataset = list(range(1, size + 1))
+    dataset = {}
+    dataset["sorted"] = list(range(1, size + 1))
+    dataset["randomized"] = dataset["sorted"][:]
+    random.shuffle(dataset["randomized"])
+    dataset["reversed"] = dataset["sorted"][::-1]
     return dataset
 
 def measure_running_time(sort_func, data, label):
