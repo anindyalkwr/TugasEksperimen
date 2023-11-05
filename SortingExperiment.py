@@ -11,7 +11,7 @@ def main():
         dataset_labels = ["sorted", "randomized", "reversed"]
 
         for label in dataset_labels:
-            with open(f"{label}_dataset_{size}.txt", "r") as file:
+            with open(f"dataset/{label}_dataset_{size}.txt", "r") as file:
                 data = [int(line) for line in file.read().splitlines()]
 
             print(f"Dataset Size: {size}, Type: {label}")
